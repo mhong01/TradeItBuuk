@@ -1,0 +1,7 @@
+{
+    "AppSyncApiName": "TradiItBookApp",
+    "schemaGraphql": "s3://mobileapp-20181115212831-deployment/amplify-appsync-files/schema.graphql.1542382559913",
+    "ResolverBucket": "mobileapp-20181115212831-deployment",
+    "ResolverRootKey": "amplify-appsync-files",
+    "DeploymentTimestamp": "1542382559913"
+}

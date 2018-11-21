@@ -1,0 +1,20 @@
+{
+    "projectName": "mobileapp",
+    "projectPath": "D:\\Projects\\TradeItBook\\mobileapp",
+    "defaultEditor": "code",
+    "frontendHandler": {
+        "javascript": "C:\\Program Files (x86)\\Nodist\\bin\\node_modules\\@aws-amplify\\cli\\node_modules\\amplify-frontend-javascript"
+    },
+    "javascript": {
+        "framework": "react-native",
+        "config": {
+            "SourceDir": "/",
+            "DistributionDir": "/",
+            "BuildCommand": "npm.cmd run-script build",
+            "StartCommand": ""
+        }
+    },
+    "providers": {
+        "awscloudformation": "C:\\Program Files (x86)\\Nodist\\bin\\node_modules\\@aws-amplify\\cli\\node_modules\\amplify-provider-awscloudformation"
+    }
+}

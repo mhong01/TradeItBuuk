@@ -1,0 +1,11 @@
+{
+    "appName": "TradeItBookApp",
+    "roleName": "pinpointLambdaRole60b2d6b2",
+    "cloudWatchPolicyName": "cloudWatchPolicy60b2d6b2",
+    "pinpointPolicyName": "pinpointPolicy60b2d6b2",
+    "authPolicyName": "pinpoint_amplify_60b2d6b2",
+    "unauthPolicyName": "pinpoint_amplify_60b2d6b2",
+    "authRoleName": "mobileapp-20181115212831-authRole",
+    "unauthRoleName": "mobileapp-20181115212831-unauthRole",
+    "IAMPrefix": "147881111193"
+}

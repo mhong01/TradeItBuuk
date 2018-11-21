@@ -1,0 +1,71 @@
+{
+	"providers": {
+		"awscloudformation": {
+			"AuthRoleName": "mobileapp-20181115212831-authRole",
+			"UnauthRoleArn": "arn:aws:iam::147881111193:role/mobileapp-20181115212831-unauthRole",
+			"AuthRoleArn": "arn:aws:iam::147881111193:role/mobileapp-20181115212831-authRole",
+			"Region": "us-east-1",
+			"DeploymentBucketName": "mobileapp-20181115212831-deployment",
+			"UnauthRoleName": "mobileapp-20181115212831-unauthRole",
+			"StackName": "mobileapp-20181115212831",
+			"StackId": "arn:aws:cloudformation:us-east-1:147881111193:stack/mobileapp-20181115212831/75d9f270-e960-11e8-9e07-50fae984a035"
+		}
+	},
+	"auth": {
+		"cognito3dc4941b": {
+			"service": "Cognito",
+			"providerPlugin": "awscloudformation",
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/mobileapp-20181115212831-deployment/amplify-cfn-templates/auth/cognito3dc4941b-cloudformation-template.yml",
+				"logicalId": "authcognito3dc4941b"
+			},
+			"lastPushTimeStamp": "2018-11-17T04:39:20.675Z",
+			"output": {
+				"IdentityPoolId": "us-east-1:52c5ab4c-0d20-441c-b175-bc270742a89c",
+				"IdentityPoolName": "mobileapp_identitypool_2e1c4d64",
+				"AppClientSecret": "7n227g9snq47rudaav32l365o7rlab7b6jdkcseq6g1patdkvab",
+				"UserPoolId": "us-east-1_sOlLtHYuT",
+				"AppClientIDWeb": "6d5re64peqsm9cv7kgratk7asj",
+				"AppClientID": "23a4rgphe2rtv2d9sdf9vn2qgh",
+				"UserPoolName": "cognito3dc4941b_userpool_fe5198e7"
+			},
+			"lastPushDirHash": "H/14Frqe3O5hv058IhW6s9gSYiM=",
+			"[object Object]": {}
+		}
+	},
+	"analytics": {
+		"TradeItBookApp": {
+			"service": "Pinpoint",
+			"providerPlugin": "awscloudformation",
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/mobileapp-20181115212831-deployment/amplify-cfn-templates/analytics/pinpoint-cloudformation-template.json",
+				"logicalId": "analyticsTradeItBookApp"
+			},
+			"lastPushTimeStamp": "2018-11-17T04:39:20.652Z",
+			"output": {
+				"appName": "TradeItBookApp",
+				"Region": "us-east-1",
+				"Id": "fb028b25e2304a0282d87457973da923"
+			},
+			"lastPushDirHash": "ZMpOkjEXUz9EL+z64v9OWDsaRVc="
+		}
+	},
+	"api": {
+		"TradiItBookApp": {
+			"service": "AppSync",
+			"providerPlugin": "awscloudformation",
+			"output": {
+				"securityType": "API_KEY",
+				"GraphQLAPIIdOutput": "qhmjsnsswrdstlpelrmfj44xwy",
+				"GraphQLAPIEndpointOutput": "https://bjam5cy6ebg7jl3nupk3arbgmu.appsync-api.us-east-1.amazonaws.com/graphql",
+				"GraphQLAPIKeyOutput": "da2-7e3q6cok5fc25celxec77z2yf4"
+			},
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/mobileapp-20181115212831-deployment/amplify-cfn-templates/api/cloudformation-template.json",
+				"logicalId": "apiTradiItBookApp"
+			},
+			"lastPushTimeStamp": "2018-11-17T04:39:20.664Z",
+			"lastPushDirHash": "8L4h0hSlr++U7K0HbW3qG+w5g/4="
+		}
+	}
+}
