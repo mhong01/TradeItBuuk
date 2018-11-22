@@ -43,7 +43,7 @@ export default class SignUpView extends Component<any, any> {
 		let passwordErrorMessage: string;
 		let isPasswordError: boolean = false;
 
-		if (this.state.Email.length == '')
+		if (this.state.Email.length == 0)
 		{
 			console.log('email required');
 			emailErrorMessage = 'Required';
@@ -62,7 +62,7 @@ export default class SignUpView extends Component<any, any> {
 			isEmailError = true;
 		}
 
-		if (this.state.Password.length == '') {
+		if (this.state.Password.length == 0) {
 			console.log('password required');
 			passwordErrorMessage = 'Required';
 			isPasswordError = true;
