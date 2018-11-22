@@ -33,22 +33,6 @@
 			"[object Object]": {}
 		}
 	},
-	"analytics": {
-		"TradeItBookApp": {
-			"service": "Pinpoint",
-			"providerPlugin": "awscloudformation",
-			"providerMetadata": {
-				"s3TemplateURL": "https://s3.amazonaws.com/mobileapp-20181115212831-deployment/amplify-cfn-templates/analytics/pinpoint-cloudformation-template.json",
-				"logicalId": "analyticsTradeItBookApp"
-			},
-			"lastPushTimeStamp": "2018-11-17T04:39:20.652Z",
-			"output": {
-				"appName": "TradeItBookApp",
-				"Region": "us-east-1",
-				"Id": "fb028b25e2304a0282d87457973da923"
-			},
-			"lastPushDirHash": "ZMpOkjEXUz9EL+z64v9OWDsaRVc="
-		}
-	},
+	"analytics": {},
 	"api": {}
 }
