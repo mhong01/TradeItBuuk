@@ -2,6 +2,9 @@ import { Auth } from 'aws-amplify';
 import { bool } from 'aws-sdk/clients/signer';
 
 class UserController {
+	private Email: string;
+
+	//Post: update Email if success
 	public async SignUpUser(email: string, password: string) {
 		try {
 			let signUpResult = await Auth.signUp({
@@ -13,6 +16,7 @@ class UserController {
 			});
 
 			console.log(signUpResult);
+			this.Email = email;
 			return SignUpEnum.Success;
 
 		} catch (error) {
@@ -30,9 +34,9 @@ class UserController {
 		}
 	}
 
-	public async ConfirmSignUpUser(email: string, code: string) {
+	public async ConfirmSignUpUser(code: string) {
 		try {
-			Auth.confirmSignUp(email, code, {
+			Auth.confirmSignUp(this.Email, code, {
 				forceAliasCreation: true
 			});
 
@@ -42,9 +46,7 @@ class UserController {
 		}
 	}
 
-	private GetUserNameFromEmail(email: string) {
-		return email.slice(0, email.indexOf('@'));
-	}
+	
 }
 
 export enum SignUpEnum {

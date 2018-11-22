@@ -13,6 +13,10 @@ import { Root } from 'native-base';
 import SplashScreen from './Code/View/SplashScreen';
 import SignInView from './Code/View/Authentication/SignInView';
 import SignUpView from './Code/View/Authentication/SignUpView';
+import PlaceHolderView from './Code/View/PlaceHolderView';
+
+import ConfirmSignUpView from './Code/View/Authentication/ConfirmSignUpView';
+
 import { createStackNavigator, createAppContainer } from "react-navigation";
 
 import Amplify from 'aws-amplify';
@@ -22,7 +26,8 @@ Amplify.configure(aws_exports);
 const AuthenticationNavigator = createStackNavigator
 	({
 		SignInView: { screen: SignInView },
-		SignUpView: { screen: SignUpView }
+		SignUpView: { screen: SignUpView },
+		ConfirmSignUpView: { screen: ConfirmSignUpView }
 	},
 	{
 		headerMode: 'none'
@@ -31,7 +36,8 @@ const AuthenticationNavigator = createStackNavigator
 const AppNavigator = createStackNavigator
 	({
 		Authentication: { screen: AuthenticationNavigator },
-		SplashScreen: { screen: SplashScreen }
+		SplashScreen: { screen: SplashScreen },
+		PlaceHolderView: { screen: PlaceHolderView }
 	},
 	{
 		headerMode: 'none'

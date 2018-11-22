@@ -35,11 +35,11 @@ export default class ConfirmSignUpView extends Component<any, any> {
 		}
 
 		if (!isCodeError) {
-			let confirmSignUpReview = await UserControllerInstance.ConfirmSignUpUser(this.state.Email, this.state.Code);
+			let confirmSignUpReview = await UserControllerInstance.ConfirmSignUpUser(this.state.Code);
 
 			switch (confirmSignUpReview) {
 				case ConfirmSignUpEnum.Success:
-					this.props.navigation.navigate('ConfirmSignUpView');
+					this.props.navigation.navigate('PlaceHolderView');
 					break;
 				default:
 					Toast.show({
@@ -55,37 +55,15 @@ export default class ConfirmSignUpView extends Component<any, any> {
 
 		this.setState({
 			IsEmailError: isCodeError,
-			EmailErrorMessage: codelErrorMessage
+			CodeErrorMessage: codelErrorMessage
 		});
 	}
 
-	GetEmailErrorMessage() {
-		if (this.state.IsEmailError) {
+	CodeErrorMessage() {
+		if (this.state.IsCodeError) {
 			return (
-				<Text style={styles.ErrorText}>{this.state.EmailErrorMessage}</Text>
+				<Text style={styles.ErrorText}>{this.state.CodeErrorMessage}</Text>
 			);
-		} else {
-			return null;
-		}
-	}
-
-	GetPasswordErrorMessage() {
-		if (this.state.IsPasswordError) {
-			if (this.state.PasswordErrorMessage == 'Invalid') {
-				return (
-					<View style={styles.passwordErrorText}>
-						<Text style={styles.ErrorText}>At least 8 characters</Text>
-						<Text style={styles.ErrorText}>At least 1 number</Text>
-						<Text style={styles.ErrorText}>At least 1 letter</Text>
-						<Text style={styles.ErrorText}>At least 1 special characters</Text>
-					</View>
-				);
-			}
-			else {
-				return (
-					<Text style={styles.ErrorText}>{this.state.PasswordErrorMessage}</Text>
-				);
-			}
 		} else {
 			return null;
 		}
@@ -100,9 +78,9 @@ export default class ConfirmSignUpView extends Component<any, any> {
 						<Item style={styles.formInputInputStyles as ViewStyle}>
 							<Input
 								placeholder='Confirm code from your email'
-								onChangeText={(text) => this.setState({ Email: text })} />
+								onChangeText={(text) => this.setState({ Code: text })} />
 						</Item>
-						{this.GetEmailErrorMessage()}
+						{this.CodeErrorMessage()}
 						<Button
 							full bordered
 							style={styles.signInButton as ViewStyle}
