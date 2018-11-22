@@ -69,606 +69,6 @@
                 }
             }
         },
-        "BlogTable": {
-            "Type": "AWS::DynamoDB::Table",
-            "Properties": {
-                "TableName": {
-                    "Fn::Join": [
-                        "-",
-                        [
-                            "Blog",
-                            {
-                                "Fn::GetAtt": [
-                                    "GraphQLAPI",
-                                    "ApiId"
-                                ]
-                            }
-                        ]
-                    ]
-                },
-                "KeySchema": [
-                    {
-                        "AttributeName": "id",
-                        "KeyType": "HASH"
-                    }
-                ],
-                "AttributeDefinitions": [
-                    {
-                        "AttributeName": "id",
-                        "AttributeType": "S"
-                    }
-                ],
-                "ProvisionedThroughput": {
-                    "ReadCapacityUnits": {
-                        "Ref": "DynamoDBModelTableReadIOPS"
-                    },
-                    "WriteCapacityUnits": {
-                        "Ref": "DynamoDBModelTableWriteIOPS"
-                    }
-                },
-                "StreamSpecification": {
-                    "StreamViewType": "NEW_AND_OLD_IMAGES"
-                }
-            }
-        },
-        "BlogIAMRole": {
-            "Type": "AWS::IAM::Role",
-            "Properties": {
-                "RoleName": {
-                    "Fn::Join": [
-                        "-",
-                        [
-                            "BlogTable",
-                            "role",
-                            {
-                                "Fn::GetAtt": [
-                                    "GraphQLAPI",
-                                    "ApiId"
-                                ]
-                            }
-                        ]
-                    ]
-                },
-                "AssumeRolePolicyDocument": {
-                    "Version": "2012-10-17",
-                    "Statement": [
-                        {
-                            "Effect": "Allow",
-                            "Principal": {
-                                "Service": "appsync.amazonaws.com"
-                            },
-                            "Action": "sts:AssumeRole"
-                        }
-                    ]
-                },
-                "Policies": [
-                    {
-                        "PolicyName": "DynamoDBAccess",
-                        "PolicyDocument": {
-                            "Version": "2012-10-17",
-                            "Statement": [
-                                {
-                                    "Effect": "Allow",
-                                    "Action": [
-                                        "dynamodb:BatchGetItem",
-                                        "dynamodb:BatchWriteItem",
-                                        "dynamodb:PutItem",
-                                        "dynamodb:DeleteItem",
-                                        "dynamodb:GetItem",
-                                        "dynamodb:Scan",
-                                        "dynamodb:Query",
-                                        "dynamodb:UpdateItem"
-                                    ],
-                                    "Resource": [
-                                        {
-                                            "Fn::GetAtt": [
-                                                "BlogTable",
-                                                "Arn"
-                                            ]
-                                        },
-                                        {
-                                            "Fn::Join": [
-                                                "/",
-                                                [
-                                                    {
-                                                        "Fn::GetAtt": [
-                                                            "BlogTable",
-                                                            "Arn"
-                                                        ]
-                                                    },
-                                                    "*"
-                                                ]
-                                            ]
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    }
-                ]
-            }
-        },
-        "BlogDataSource": {
-            "Type": "AWS::AppSync::DataSource",
-            "Properties": {
-                "ApiId": {
-                    "Fn::GetAtt": [
-                        "GraphQLAPI",
-                        "ApiId"
-                    ]
-                },
-                "Name": "BlogTable",
-                "Type": "AMAZON_DYNAMODB",
-                "ServiceRoleArn": {
-                    "Fn::GetAtt": [
-                        "BlogIAMRole",
-                        "Arn"
-                    ]
-                },
-                "DynamoDBConfig": {
-                    "AwsRegion": {
-                        "Fn::Select": [
-                            3,
-                            {
-                                "Fn::Split": [
-                                    ":",
-                                    {
-                                        "Fn::GetAtt": [
-                                            "BlogTable",
-                                            "Arn"
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    "TableName": {
-                        "Ref": "BlogTable"
-                    }
-                }
-            },
-            "DependsOn": "BlogIAMRole"
-        },
-        "GetBlogResolver": {
-            "Type": "AWS::AppSync::Resolver",
-            "Properties": {
-                "ApiId": {
-                    "Fn::GetAtt": [
-                        "GraphQLAPI",
-                        "ApiId"
-                    ]
-                },
-                "DataSourceName": {
-                    "Fn::GetAtt": [
-                        "BlogDataSource",
-                        "Name"
-                    ]
-                },
-                "FieldName": "getBlog",
-                "TypeName": "Query",
-                "RequestMappingTemplateS3Location": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            "s3://",
-                            {
-                                "Fn::Join": [
-                                    "/",
-                                    [
-                                        {
-                                            "Ref": "ResolverBucket"
-                                        },
-                                        {
-                                            "Ref": "ResolverRootKey"
-                                        },
-                                        {
-                                            "Fn::Join": [
-                                                ".",
-                                                [
-                                                    "Query",
-                                                    "getBlog",
-                                                    "request",
-                                                    {
-                                                        "Ref": "DeploymentTimestamp"
-                                                    }
-                                                ]
-                                            ]
-                                        }
-                                    ]
-                                ]
-                            }
-                        ]
-                    ]
-                },
-                "ResponseMappingTemplateS3Location": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            "s3://",
-                            {
-                                "Fn::Join": [
-                                    "/",
-                                    [
-                                        {
-                                            "Ref": "ResolverBucket"
-                                        },
-                                        {
-                                            "Ref": "ResolverRootKey"
-                                        },
-                                        {
-                                            "Fn::Join": [
-                                                ".",
-                                                [
-                                                    "Query",
-                                                    "getBlog",
-                                                    "response",
-                                                    {
-                                                        "Ref": "DeploymentTimestamp"
-                                                    }
-                                                ]
-                                            ]
-                                        }
-                                    ]
-                                ]
-                            }
-                        ]
-                    ]
-                }
-            },
-            "DependsOn": "GraphQLSchema"
-        },
-        "ListBlogResolver": {
-            "Type": "AWS::AppSync::Resolver",
-            "Properties": {
-                "ApiId": {
-                    "Fn::GetAtt": [
-                        "GraphQLAPI",
-                        "ApiId"
-                    ]
-                },
-                "DataSourceName": {
-                    "Fn::GetAtt": [
-                        "BlogDataSource",
-                        "Name"
-                    ]
-                },
-                "FieldName": "listBlogs",
-                "TypeName": "Query",
-                "RequestMappingTemplateS3Location": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            "s3://",
-                            {
-                                "Fn::Join": [
-                                    "/",
-                                    [
-                                        {
-                                            "Ref": "ResolverBucket"
-                                        },
-                                        {
-                                            "Ref": "ResolverRootKey"
-                                        },
-                                        {
-                                            "Fn::Join": [
-                                                ".",
-                                                [
-                                                    "Query",
-                                                    "listBlogs",
-                                                    "request",
-                                                    {
-                                                        "Ref": "DeploymentTimestamp"
-                                                    }
-                                                ]
-                                            ]
-                                        }
-                                    ]
-                                ]
-                            }
-                        ]
-                    ]
-                },
-                "ResponseMappingTemplateS3Location": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            "s3://",
-                            {
-                                "Fn::Join": [
-                                    "/",
-                                    [
-                                        {
-                                            "Ref": "ResolverBucket"
-                                        },
-                                        {
-                                            "Ref": "ResolverRootKey"
-                                        },
-                                        {
-                                            "Fn::Join": [
-                                                ".",
-                                                [
-                                                    "Query",
-                                                    "listBlogs",
-                                                    "response",
-                                                    {
-                                                        "Ref": "DeploymentTimestamp"
-                                                    }
-                                                ]
-                                            ]
-                                        }
-                                    ]
-                                ]
-                            }
-                        ]
-                    ]
-                }
-            },
-            "DependsOn": "GraphQLSchema"
-        },
-        "CreateBlogResolver": {
-            "Type": "AWS::AppSync::Resolver",
-            "Properties": {
-                "ApiId": {
-                    "Fn::GetAtt": [
-                        "GraphQLAPI",
-                        "ApiId"
-                    ]
-                },
-                "DataSourceName": {
-                    "Fn::GetAtt": [
-                        "BlogDataSource",
-                        "Name"
-                    ]
-                },
-                "FieldName": "createBlog",
-                "TypeName": "Mutation",
-                "RequestMappingTemplateS3Location": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            "s3://",
-                            {
-                                "Fn::Join": [
-                                    "/",
-                                    [
-                                        {
-                                            "Ref": "ResolverBucket"
-                                        },
-                                        {
-                                            "Ref": "ResolverRootKey"
-                                        },
-                                        {
-                                            "Fn::Join": [
-                                                ".",
-                                                [
-                                                    "Mutation",
-                                                    "createBlog",
-                                                    "request",
-                                                    {
-                                                        "Ref": "DeploymentTimestamp"
-                                                    }
-                                                ]
-                                            ]
-                                        }
-                                    ]
-                                ]
-                            }
-                        ]
-                    ]
-                },
-                "ResponseMappingTemplateS3Location": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            "s3://",
-                            {
-                                "Fn::Join": [
-                                    "/",
-                                    [
-                                        {
-                                            "Ref": "ResolverBucket"
-                                        },
-                                        {
-                                            "Ref": "ResolverRootKey"
-                                        },
-                                        {
-                                            "Fn::Join": [
-                                                ".",
-                                                [
-                                                    "Mutation",
-                                                    "createBlog",
-                                                    "response",
-                                                    {
-                                                        "Ref": "DeploymentTimestamp"
-                                                    }
-                                                ]
-                                            ]
-                                        }
-                                    ]
-                                ]
-                            }
-                        ]
-                    ]
-                }
-            },
-            "DependsOn": "GraphQLSchema"
-        },
-        "UpdateBlogResolver": {
-            "Type": "AWS::AppSync::Resolver",
-            "Properties": {
-                "ApiId": {
-                    "Fn::GetAtt": [
-                        "GraphQLAPI",
-                        "ApiId"
-                    ]
-                },
-                "DataSourceName": {
-                    "Fn::GetAtt": [
-                        "BlogDataSource",
-                        "Name"
-                    ]
-                },
-                "FieldName": "updateBlog",
-                "TypeName": "Mutation",
-                "RequestMappingTemplateS3Location": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            "s3://",
-                            {
-                                "Fn::Join": [
-                                    "/",
-                                    [
-                                        {
-                                            "Ref": "ResolverBucket"
-                                        },
-                                        {
-                                            "Ref": "ResolverRootKey"
-                                        },
-                                        {
-                                            "Fn::Join": [
-                                                ".",
-                                                [
-                                                    "Mutation",
-                                                    "updateBlog",
-                                                    "request",
-                                                    {
-                                                        "Ref": "DeploymentTimestamp"
-                                                    }
-                                                ]
-                                            ]
-                                        }
-                                    ]
-                                ]
-                            }
-                        ]
-                    ]
-                },
-                "ResponseMappingTemplateS3Location": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            "s3://",
-                            {
-                                "Fn::Join": [
-                                    "/",
-                                    [
-                                        {
-                                            "Ref": "ResolverBucket"
-                                        },
-                                        {
-                                            "Ref": "ResolverRootKey"
-                                        },
-                                        {
-                                            "Fn::Join": [
-                                                ".",
-                                                [
-                                                    "Mutation",
-                                                    "updateBlog",
-                                                    "response",
-                                                    {
-                                                        "Ref": "DeploymentTimestamp"
-                                                    }
-                                                ]
-                                            ]
-                                        }
-                                    ]
-                                ]
-                            }
-                        ]
-                    ]
-                }
-            },
-            "DependsOn": "GraphQLSchema"
-        },
-        "DeleteBlogResolver": {
-            "Type": "AWS::AppSync::Resolver",
-            "Properties": {
-                "ApiId": {
-                    "Fn::GetAtt": [
-                        "GraphQLAPI",
-                        "ApiId"
-                    ]
-                },
-                "DataSourceName": {
-                    "Fn::GetAtt": [
-                        "BlogDataSource",
-                        "Name"
-                    ]
-                },
-                "FieldName": "deleteBlog",
-                "TypeName": "Mutation",
-                "RequestMappingTemplateS3Location": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            "s3://",
-                            {
-                                "Fn::Join": [
-                                    "/",
-                                    [
-                                        {
-                                            "Ref": "ResolverBucket"
-                                        },
-                                        {
-                                            "Ref": "ResolverRootKey"
-                                        },
-                                        {
-                                            "Fn::Join": [
-                                                ".",
-                                                [
-                                                    "Mutation",
-                                                    "deleteBlog",
-                                                    "request",
-                                                    {
-                                                        "Ref": "DeploymentTimestamp"
-                                                    }
-                                                ]
-                                            ]
-                                        }
-                                    ]
-                                ]
-                            }
-                        ]
-                    ]
-                },
-                "ResponseMappingTemplateS3Location": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            "s3://",
-                            {
-                                "Fn::Join": [
-                                    "/",
-                                    [
-                                        {
-                                            "Ref": "ResolverBucket"
-                                        },
-                                        {
-                                            "Ref": "ResolverRootKey"
-                                        },
-                                        {
-                                            "Fn::Join": [
-                                                ".",
-                                                [
-                                                    "Mutation",
-                                                    "deleteBlog",
-                                                    "response",
-                                                    {
-                                                        "Ref": "DeploymentTimestamp"
-                                                    }
-                                                ]
-                                            ]
-                                        }
-                                    ]
-                                ]
-                            }
-                        ]
-                    ]
-                }
-            },
-            "DependsOn": "GraphQLSchema"
-        },
         "PostTable": {
             "Type": "AWS::DynamoDB::Table",
             "Properties": {
@@ -698,7 +98,7 @@
                         "AttributeType": "S"
                     },
                     {
-                        "AttributeName": "postBlogId",
+                        "AttributeName": "postBookId",
                         "AttributeType": "S"
                     }
                 ],
@@ -715,10 +115,10 @@
                 },
                 "GlobalSecondaryIndexes": [
                     {
-                        "IndexName": "gsi-BlogPosts",
+                        "IndexName": "gsi-BookPosts",
                         "KeySchema": [
                             {
-                                "AttributeName": "postBlogId",
+                                "AttributeName": "postBookId",
                                 "KeyType": "HASH"
                             }
                         ],
@@ -1295,14 +695,14 @@
             },
             "DependsOn": "GraphQLSchema"
         },
-        "CommentTable": {
+        "BookTable": {
             "Type": "AWS::DynamoDB::Table",
             "Properties": {
                 "TableName": {
                     "Fn::Join": [
                         "-",
                         [
-                            "Comment",
+                            "Book",
                             {
                                 "Fn::GetAtt": [
                                     "GraphQLAPI",
@@ -1322,10 +722,6 @@
                     {
                         "AttributeName": "id",
                         "AttributeType": "S"
-                    },
-                    {
-                        "AttributeName": "commentPostId",
-                        "AttributeType": "S"
                     }
                 ],
                 "ProvisionedThroughput": {
@@ -1338,39 +734,17 @@
                 },
                 "StreamSpecification": {
                     "StreamViewType": "NEW_AND_OLD_IMAGES"
-                },
-                "GlobalSecondaryIndexes": [
-                    {
-                        "IndexName": "gsi-PostComments",
-                        "KeySchema": [
-                            {
-                                "AttributeName": "commentPostId",
-                                "KeyType": "HASH"
-                            }
-                        ],
-                        "Projection": {
-                            "ProjectionType": "ALL"
-                        },
-                        "ProvisionedThroughput": {
-                            "ReadCapacityUnits": {
-                                "Ref": "DynamoDBModelTableReadIOPS"
-                            },
-                            "WriteCapacityUnits": {
-                                "Ref": "DynamoDBModelTableWriteIOPS"
-                            }
-                        }
-                    }
-                ]
+                }
             }
         },
-        "CommentIAMRole": {
+        "BookIAMRole": {
             "Type": "AWS::IAM::Role",
             "Properties": {
                 "RoleName": {
                     "Fn::Join": [
                         "-",
                         [
-                            "CommentTable",
+                            "BookTable",
                             "role",
                             {
                                 "Fn::GetAtt": [
@@ -1414,7 +788,7 @@
                                     "Resource": [
                                         {
                                             "Fn::GetAtt": [
-                                                "CommentTable",
+                                                "BookTable",
                                                 "Arn"
                                             ]
                                         },
@@ -1424,7 +798,7 @@
                                                 [
                                                     {
                                                         "Fn::GetAtt": [
-                                                            "CommentTable",
+                                                            "BookTable",
                                                             "Arn"
                                                         ]
                                                     },
@@ -1440,7 +814,7 @@
                 ]
             }
         },
-        "CommentDataSource": {
+        "BookDataSource": {
             "Type": "AWS::AppSync::DataSource",
             "Properties": {
                 "ApiId": {
@@ -1449,11 +823,11 @@
                         "ApiId"
                     ]
                 },
-                "Name": "CommentTable",
+                "Name": "BookTable",
                 "Type": "AMAZON_DYNAMODB",
                 "ServiceRoleArn": {
                     "Fn::GetAtt": [
-                        "CommentIAMRole",
+                        "BookIAMRole",
                         "Arn"
                     ]
                 },
@@ -1466,7 +840,7 @@
                                     ":",
                                     {
                                         "Fn::GetAtt": [
-                                            "CommentTable",
+                                            "BookTable",
                                             "Arn"
                                         ]
                                     }
@@ -1475,13 +849,13 @@
                         ]
                     },
                     "TableName": {
-                        "Ref": "CommentTable"
+                        "Ref": "BookTable"
                     }
                 }
             },
-            "DependsOn": "CommentIAMRole"
+            "DependsOn": "BookIAMRole"
         },
-        "GetCommentResolver": {
+        "GetBookResolver": {
             "Type": "AWS::AppSync::Resolver",
             "Properties": {
                 "ApiId": {
@@ -1492,11 +866,11 @@
                 },
                 "DataSourceName": {
                     "Fn::GetAtt": [
-                        "CommentDataSource",
+                        "BookDataSource",
                         "Name"
                     ]
                 },
-                "FieldName": "getComment",
+                "FieldName": "getBook",
                 "TypeName": "Query",
                 "RequestMappingTemplateS3Location": {
                     "Fn::Join": [
@@ -1518,7 +892,7 @@
                                                 ".",
                                                 [
                                                     "Query",
-                                                    "getComment",
+                                                    "getBook",
                                                     "request",
                                                     {
                                                         "Ref": "DeploymentTimestamp"
@@ -1552,7 +926,7 @@
                                                 ".",
                                                 [
                                                     "Query",
-                                                    "getComment",
+                                                    "getBook",
                                                     "response",
                                                     {
                                                         "Ref": "DeploymentTimestamp"
@@ -1569,7 +943,7 @@
             },
             "DependsOn": "GraphQLSchema"
         },
-        "ListCommentResolver": {
+        "ListBookResolver": {
             "Type": "AWS::AppSync::Resolver",
             "Properties": {
                 "ApiId": {
@@ -1580,11 +954,11 @@
                 },
                 "DataSourceName": {
                     "Fn::GetAtt": [
-                        "CommentDataSource",
+                        "BookDataSource",
                         "Name"
                     ]
                 },
-                "FieldName": "listComments",
+                "FieldName": "listBooks",
                 "TypeName": "Query",
                 "RequestMappingTemplateS3Location": {
                     "Fn::Join": [
@@ -1606,7 +980,7 @@
                                                 ".",
                                                 [
                                                     "Query",
-                                                    "listComments",
+                                                    "listBooks",
                                                     "request",
                                                     {
                                                         "Ref": "DeploymentTimestamp"
@@ -1640,7 +1014,7 @@
                                                 ".",
                                                 [
                                                     "Query",
-                                                    "listComments",
+                                                    "listBooks",
                                                     "response",
                                                     {
                                                         "Ref": "DeploymentTimestamp"
@@ -1657,7 +1031,7 @@
             },
             "DependsOn": "GraphQLSchema"
         },
-        "CreateCommentResolver": {
+        "CreateBookResolver": {
             "Type": "AWS::AppSync::Resolver",
             "Properties": {
                 "ApiId": {
@@ -1668,11 +1042,11 @@
                 },
                 "DataSourceName": {
                     "Fn::GetAtt": [
-                        "CommentDataSource",
+                        "BookDataSource",
                         "Name"
                     ]
                 },
-                "FieldName": "createComment",
+                "FieldName": "createBook",
                 "TypeName": "Mutation",
                 "RequestMappingTemplateS3Location": {
                     "Fn::Join": [
@@ -1694,7 +1068,7 @@
                                                 ".",
                                                 [
                                                     "Mutation",
-                                                    "createComment",
+                                                    "createBook",
                                                     "request",
                                                     {
                                                         "Ref": "DeploymentTimestamp"
@@ -1728,7 +1102,7 @@
                                                 ".",
                                                 [
                                                     "Mutation",
-                                                    "createComment",
+                                                    "createBook",
                                                     "response",
                                                     {
                                                         "Ref": "DeploymentTimestamp"
@@ -1745,7 +1119,7 @@
             },
             "DependsOn": "GraphQLSchema"
         },
-        "UpdateCommentResolver": {
+        "UpdateBookResolver": {
             "Type": "AWS::AppSync::Resolver",
             "Properties": {
                 "ApiId": {
@@ -1756,11 +1130,11 @@
                 },
                 "DataSourceName": {
                     "Fn::GetAtt": [
-                        "CommentDataSource",
+                        "BookDataSource",
                         "Name"
                     ]
                 },
-                "FieldName": "updateComment",
+                "FieldName": "updateBook",
                 "TypeName": "Mutation",
                 "RequestMappingTemplateS3Location": {
                     "Fn::Join": [
@@ -1782,7 +1156,7 @@
                                                 ".",
                                                 [
                                                     "Mutation",
-                                                    "updateComment",
+                                                    "updateBook",
                                                     "request",
                                                     {
                                                         "Ref": "DeploymentTimestamp"
@@ -1816,7 +1190,7 @@
                                                 ".",
                                                 [
                                                     "Mutation",
-                                                    "updateComment",
+                                                    "updateBook",
                                                     "response",
                                                     {
                                                         "Ref": "DeploymentTimestamp"
@@ -1833,7 +1207,7 @@
             },
             "DependsOn": "GraphQLSchema"
         },
-        "DeleteCommentResolver": {
+        "DeleteBookResolver": {
             "Type": "AWS::AppSync::Resolver",
             "Properties": {
                 "ApiId": {
@@ -1844,11 +1218,11 @@
                 },
                 "DataSourceName": {
                     "Fn::GetAtt": [
-                        "CommentDataSource",
+                        "BookDataSource",
                         "Name"
                     ]
                 },
-                "FieldName": "deleteComment",
+                "FieldName": "deleteBook",
                 "TypeName": "Mutation",
                 "RequestMappingTemplateS3Location": {
                     "Fn::Join": [
@@ -1870,7 +1244,7 @@
                                                 ".",
                                                 [
                                                     "Mutation",
-                                                    "deleteComment",
+                                                    "deleteBook",
                                                     "request",
                                                     {
                                                         "Ref": "DeploymentTimestamp"
@@ -1904,7 +1278,7 @@
                                                 ".",
                                                 [
                                                     "Mutation",
-                                                    "deleteComment",
+                                                    "deleteBook",
                                                     "response",
                                                     {
                                                         "Ref": "DeploymentTimestamp"
@@ -1921,7 +1295,95 @@
             },
             "DependsOn": "GraphQLSchema"
         },
-        "BlogpostsResolver": {
+        "PostbookResolver": {
+            "Type": "AWS::AppSync::Resolver",
+            "Properties": {
+                "ApiId": {
+                    "Fn::GetAtt": [
+                        "GraphQLAPI",
+                        "ApiId"
+                    ]
+                },
+                "DataSourceName": {
+                    "Fn::GetAtt": [
+                        "BookDataSource",
+                        "Name"
+                    ]
+                },
+                "FieldName": "book",
+                "TypeName": "Post",
+                "RequestMappingTemplateS3Location": {
+                    "Fn::Join": [
+                        "",
+                        [
+                            "s3://",
+                            {
+                                "Fn::Join": [
+                                    "/",
+                                    [
+                                        {
+                                            "Ref": "ResolverBucket"
+                                        },
+                                        {
+                                            "Ref": "ResolverRootKey"
+                                        },
+                                        {
+                                            "Fn::Join": [
+                                                ".",
+                                                [
+                                                    "Post",
+                                                    "book",
+                                                    "request",
+                                                    {
+                                                        "Ref": "DeploymentTimestamp"
+                                                    }
+                                                ]
+                                            ]
+                                        }
+                                    ]
+                                ]
+                            }
+                        ]
+                    ]
+                },
+                "ResponseMappingTemplateS3Location": {
+                    "Fn::Join": [
+                        "",
+                        [
+                            "s3://",
+                            {
+                                "Fn::Join": [
+                                    "/",
+                                    [
+                                        {
+                                            "Ref": "ResolverBucket"
+                                        },
+                                        {
+                                            "Ref": "ResolverRootKey"
+                                        },
+                                        {
+                                            "Fn::Join": [
+                                                ".",
+                                                [
+                                                    "Post",
+                                                    "book",
+                                                    "response",
+                                                    {
+                                                        "Ref": "DeploymentTimestamp"
+                                                    }
+                                                ]
+                                            ]
+                                        }
+                                    ]
+                                ]
+                            }
+                        ]
+                    ]
+                }
+            },
+            "DependsOn": "GraphQLSchema"
+        },
+        "BookpostsResolver": {
             "Type": "AWS::AppSync::Resolver",
             "Properties": {
                 "ApiId": {
@@ -1937,7 +1399,7 @@
                     ]
                 },
                 "FieldName": "posts",
-                "TypeName": "Blog",
+                "TypeName": "Book",
                 "RequestMappingTemplateS3Location": {
                     "Fn::Join": [
                         "",
@@ -1957,7 +1419,7 @@
                                             "Fn::Join": [
                                                 ".",
                                                 [
-                                                    "Blog",
+                                                    "Book",
                                                     "posts",
                                                     "request",
                                                     {
@@ -1991,272 +1453,8 @@
                                             "Fn::Join": [
                                                 ".",
                                                 [
-                                                    "Blog",
+                                                    "Book",
                                                     "posts",
-                                                    "response",
-                                                    {
-                                                        "Ref": "DeploymentTimestamp"
-                                                    }
-                                                ]
-                                            ]
-                                        }
-                                    ]
-                                ]
-                            }
-                        ]
-                    ]
-                }
-            },
-            "DependsOn": "GraphQLSchema"
-        },
-        "PostblogResolver": {
-            "Type": "AWS::AppSync::Resolver",
-            "Properties": {
-                "ApiId": {
-                    "Fn::GetAtt": [
-                        "GraphQLAPI",
-                        "ApiId"
-                    ]
-                },
-                "DataSourceName": {
-                    "Fn::GetAtt": [
-                        "BlogDataSource",
-                        "Name"
-                    ]
-                },
-                "FieldName": "blog",
-                "TypeName": "Post",
-                "RequestMappingTemplateS3Location": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            "s3://",
-                            {
-                                "Fn::Join": [
-                                    "/",
-                                    [
-                                        {
-                                            "Ref": "ResolverBucket"
-                                        },
-                                        {
-                                            "Ref": "ResolverRootKey"
-                                        },
-                                        {
-                                            "Fn::Join": [
-                                                ".",
-                                                [
-                                                    "Post",
-                                                    "blog",
-                                                    "request",
-                                                    {
-                                                        "Ref": "DeploymentTimestamp"
-                                                    }
-                                                ]
-                                            ]
-                                        }
-                                    ]
-                                ]
-                            }
-                        ]
-                    ]
-                },
-                "ResponseMappingTemplateS3Location": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            "s3://",
-                            {
-                                "Fn::Join": [
-                                    "/",
-                                    [
-                                        {
-                                            "Ref": "ResolverBucket"
-                                        },
-                                        {
-                                            "Ref": "ResolverRootKey"
-                                        },
-                                        {
-                                            "Fn::Join": [
-                                                ".",
-                                                [
-                                                    "Post",
-                                                    "blog",
-                                                    "response",
-                                                    {
-                                                        "Ref": "DeploymentTimestamp"
-                                                    }
-                                                ]
-                                            ]
-                                        }
-                                    ]
-                                ]
-                            }
-                        ]
-                    ]
-                }
-            },
-            "DependsOn": "GraphQLSchema"
-        },
-        "PostcommentsResolver": {
-            "Type": "AWS::AppSync::Resolver",
-            "Properties": {
-                "ApiId": {
-                    "Fn::GetAtt": [
-                        "GraphQLAPI",
-                        "ApiId"
-                    ]
-                },
-                "DataSourceName": {
-                    "Fn::GetAtt": [
-                        "CommentDataSource",
-                        "Name"
-                    ]
-                },
-                "FieldName": "comments",
-                "TypeName": "Post",
-                "RequestMappingTemplateS3Location": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            "s3://",
-                            {
-                                "Fn::Join": [
-                                    "/",
-                                    [
-                                        {
-                                            "Ref": "ResolverBucket"
-                                        },
-                                        {
-                                            "Ref": "ResolverRootKey"
-                                        },
-                                        {
-                                            "Fn::Join": [
-                                                ".",
-                                                [
-                                                    "Post",
-                                                    "comments",
-                                                    "request",
-                                                    {
-                                                        "Ref": "DeploymentTimestamp"
-                                                    }
-                                                ]
-                                            ]
-                                        }
-                                    ]
-                                ]
-                            }
-                        ]
-                    ]
-                },
-                "ResponseMappingTemplateS3Location": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            "s3://",
-                            {
-                                "Fn::Join": [
-                                    "/",
-                                    [
-                                        {
-                                            "Ref": "ResolverBucket"
-                                        },
-                                        {
-                                            "Ref": "ResolverRootKey"
-                                        },
-                                        {
-                                            "Fn::Join": [
-                                                ".",
-                                                [
-                                                    "Post",
-                                                    "comments",
-                                                    "response",
-                                                    {
-                                                        "Ref": "DeploymentTimestamp"
-                                                    }
-                                                ]
-                                            ]
-                                        }
-                                    ]
-                                ]
-                            }
-                        ]
-                    ]
-                }
-            },
-            "DependsOn": "GraphQLSchema"
-        },
-        "CommentpostResolver": {
-            "Type": "AWS::AppSync::Resolver",
-            "Properties": {
-                "ApiId": {
-                    "Fn::GetAtt": [
-                        "GraphQLAPI",
-                        "ApiId"
-                    ]
-                },
-                "DataSourceName": {
-                    "Fn::GetAtt": [
-                        "PostDataSource",
-                        "Name"
-                    ]
-                },
-                "FieldName": "post",
-                "TypeName": "Comment",
-                "RequestMappingTemplateS3Location": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            "s3://",
-                            {
-                                "Fn::Join": [
-                                    "/",
-                                    [
-                                        {
-                                            "Ref": "ResolverBucket"
-                                        },
-                                        {
-                                            "Ref": "ResolverRootKey"
-                                        },
-                                        {
-                                            "Fn::Join": [
-                                                ".",
-                                                [
-                                                    "Comment",
-                                                    "post",
-                                                    "request",
-                                                    {
-                                                        "Ref": "DeploymentTimestamp"
-                                                    }
-                                                ]
-                                            ]
-                                        }
-                                    ]
-                                ]
-                            }
-                        ]
-                    ]
-                },
-                "ResponseMappingTemplateS3Location": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            "s3://",
-                            {
-                                "Fn::Join": [
-                                    "/",
-                                    [
-                                        {
-                                            "Ref": "ResolverBucket"
-                                        },
-                                        {
-                                            "Ref": "ResolverRootKey"
-                                        },
-                                        {
-                                            "Fn::Join": [
-                                                ".",
-                                                [
-                                                    "Comment",
-                                                    "post",
                                                     "response",
                                                     {
                                                         "Ref": "DeploymentTimestamp"

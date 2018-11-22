@@ -50,22 +50,5 @@
 			"lastPushDirHash": "ZMpOkjEXUz9EL+z64v9OWDsaRVc="
 		}
 	},
-	"api": {
-		"TradiItBookApp": {
-			"service": "AppSync",
-			"providerPlugin": "awscloudformation",
-			"output": {
-				"securityType": "API_KEY",
-				"GraphQLAPIIdOutput": "qhmjsnsswrdstlpelrmfj44xwy",
-				"GraphQLAPIEndpointOutput": "https://bjam5cy6ebg7jl3nupk3arbgmu.appsync-api.us-east-1.amazonaws.com/graphql",
-				"GraphQLAPIKeyOutput": "da2-7e3q6cok5fc25celxec77z2yf4"
-			},
-			"providerMetadata": {
-				"s3TemplateURL": "https://s3.amazonaws.com/mobileapp-20181115212831-deployment/amplify-cfn-templates/api/cloudformation-template.json",
-				"logicalId": "apiTradiItBookApp"
-			},
-			"lastPushTimeStamp": "2018-11-17T04:39:20.664Z",
-			"lastPushDirHash": "8L4h0hSlr++U7K0HbW3qG+w5g/4="
-		}
-	}
+	"api": {}
 }
