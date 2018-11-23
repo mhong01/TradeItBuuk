@@ -5,7 +5,7 @@ import { ThemeColor, FontSize } from '../Styles/Theme';
 import { EmailRegexString, PasswordRegexString } from '../../Helpers';
 
 // Todo: to be moved to AppGlobal
-import UserControllerInstance, { SignUpEnum } from '../../Controller/UserController';
+import AppGlobal, { SignUpEnum } from '../../AppGlobal';
 
 // Aws Amplify
 import { Auth } from 'aws-amplify';
@@ -86,7 +86,7 @@ export default class SignUpView extends Component<any, any> {
 		}
 
 		if(!isEmailError && !isPasswordError) {
-			let signUpResult = await UserControllerInstance.SignUpUser(this.state.Email, this.state.Password);
+			let signUpResult = await AppGlobal.UserControllerInstance.SignUpUser(this.state.Email, this.state.Password);
 			
 			switch(signUpResult){
 				case SignUpEnum.Success:

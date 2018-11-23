@@ -14,6 +14,7 @@ import SplashScreen from './Code/View/SplashScreen';
 import SignInView from './Code/View/Authentication/SignInView';
 import SignUpView from './Code/View/Authentication/SignUpView';
 import PlaceHolderView from './Code/View/PlaceHolderView';
+import FeedView from './Code/View/FeedView';
 
 import ConfirmSignUpView from './Code/View/Authentication/ConfirmSignUpView';
 
@@ -35,6 +36,7 @@ const AuthenticationNavigator = createStackNavigator
 
 const AppNavigator = createStackNavigator
 	({
+		FeedView: { screen: FeedView },
 		Authentication: { screen: AuthenticationNavigator },
 		SplashScreen: { screen: SplashScreen },
 		PlaceHolderView: { screen: PlaceHolderView }

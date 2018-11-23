@@ -1,0 +1,14 @@
+type Book @model {
+	id: ID!
+	title: String!
+	programCode: String
+	classCode: String
+	posts: [Post!] @connection(name: "BookPosts")
+}
+type Post @model {
+	id: ID!
+	title: String!
+  	ownerID: String!
+	description: String
+	book: Book @connection(name: "BookPosts")
+}

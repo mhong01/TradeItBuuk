@@ -2,14 +2,9 @@ import React, { Component } from 'react';
 import { Platform, StyleSheet, ViewStyle, Text } from 'react-native';
 import { Container, Header, Content, Button, Input, Item, Form, Row, Icon, Col, Grid, View, Toast } from 'native-base';
 import { ThemeColor, FontSize } from '../Styles/Theme';
-import { EmailRegexString, PasswordRegexString } from '../../Helpers';
 
 // Todo: to be moved to AppGlobal
-import UserControllerInstance, { SignUpEnum, ConfirmSignUpEnum } from '../../Controller/UserController';
-
-// Aws Amplify
-import { Auth } from 'aws-amplify';
-import { from } from 'zen-observable';
+import AppGlobal, { ConfirmSignUpEnum } from '../../AppGlobal';
 
 export default class ConfirmSignUpView extends Component<any, any> {
 
@@ -19,7 +14,7 @@ export default class ConfirmSignUpView extends Component<any, any> {
 
 	componentWillMount() {
 		this.setState(() => ({
-			code: 'nguyenh57@student.douglascollege.ca',
+			code: '',
 			IsCodeError: false
 		}));
 	}
@@ -35,7 +30,7 @@ export default class ConfirmSignUpView extends Component<any, any> {
 		}
 
 		if (!isCodeError) {
-			let confirmSignUpReview = await UserControllerInstance.ConfirmSignUpUser(this.state.Code);
+			let confirmSignUpReview = await AppGlobal.UserControllerInstance.ConfirmSignUpUser(this.state.Code);
 
 			switch (confirmSignUpReview) {
 				case ConfirmSignUpEnum.Success:

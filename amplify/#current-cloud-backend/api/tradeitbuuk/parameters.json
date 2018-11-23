@@ -1,0 +1,7 @@
+{
+    "AppSyncApiName": "tradeitbuuk",
+    "schemaGraphql": "s3://radetuuk-20181122175856-deployment/amplify-appsync-files/schema.graphql.1542938781133",
+    "ResolverBucket": "radetuuk-20181122175856-deployment",
+    "ResolverRootKey": "amplify-appsync-files",
+    "DeploymentTimestamp": "1542938781133"
+}

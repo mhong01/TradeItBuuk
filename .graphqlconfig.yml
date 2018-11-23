@@ -1,16 +1,13 @@
 projects:
-  TradiItBookApp:
+  tradeitbuuk:
     schemaPath: src\graphql\schema.json
     includes:
       - src\graphql\**\*.ts
     excludes:
-      - ./amplify/**
+      - amplify/**
     extensions:
       amplify:
         codeGenTarget: typescript
         generatedFileName: src\API.ts
         docsFilePath: src\graphql
-        graphQLApiId: qhmjsnsswrdstlpelrmfj44xwy
-      endpoints:
-        prod: >-
-          https://bjam5cy6ebg7jl3nupk3arbgmu.appsync-api.us-east-1.amazonaws.com/graphql
+        graphQLApiId: oucr66ajf5cvfal5ahb3frdy4m

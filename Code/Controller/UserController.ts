@@ -2,14 +2,21 @@ import { Auth } from 'aws-amplify';
 import { bool } from 'aws-sdk/clients/signer';
 import { EmailRegexString, PasswordRegexString } from '../Helpers';
 
-class UserController {
-	private Email: string;
-	private EmailRegex: RegExp;
-	private PasswordRegex: RegExp;
+export class UserController {
+	private _Email: string;
+	private _EmailRegex: RegExp;
+	private _PasswordRegex: RegExp;
+	private _IsSignedIn: boolean;
+	public IsSignedIn() {
+		get: {
+			return this._IsSignedIn;
+		}
+	}
+	
 
 	constructor() {
-		this.EmailRegex = new RegExp(EmailRegexString, 'i');
-		this.PasswordRegex = new RegExp(PasswordRegexString);
+		this._EmailRegex = new RegExp(EmailRegexString, 'i');
+		this._PasswordRegex = new RegExp(PasswordRegexString);
 	}
 	
 
@@ -25,7 +32,7 @@ class UserController {
 			});
 
 			console.log(signUpResult);
-			this.Email = email;
+			this._Email = email;
 			return SignUpEnum.Success;
 
 		} catch (error) {
@@ -45,7 +52,7 @@ class UserController {
 
 	public async ConfirmSignUpUser(code: string) {
 		try {
-			Auth.confirmSignUp(this.Email, code, {
+			Auth.confirmSignUp(this._Email, code, {
 				forceAliasCreation: true
 			});
 
@@ -60,7 +67,8 @@ class UserController {
 			let signInResult = await Auth.signIn(email, password);
 
 			console.log(signInResult);
-			this.Email = email;
+			this._Email = email;
+			this._IsSignedIn = true;
 			return SignInEnum.Success;
 
 		} catch (error) {
@@ -80,7 +88,7 @@ class UserController {
 		if (email == '') {
 			return EmailStateEnum.Empty;
 		}
-		else if (!this.EmailRegex.test(email)) {
+		else if (!this._EmailRegex.test(email)) {
 			return EmailStateEnum.Invalid;
 		}
 		else if (!email.includes('@student.douglascollege.ca')) {
