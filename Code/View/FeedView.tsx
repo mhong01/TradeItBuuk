@@ -57,9 +57,13 @@ export default class FeedView extends Component<any, any> {
 
 	render() {
 		return (
-			<Container>
-				<Button>
+			<Container style={styles.container as ViewStyle}>
+				
+
+				<Button style={[styles.postButton, styles.postBackButton] as ViewStyle[]}></Button>
+				<Button style={[styles.postButton, styles.postFrontButton] as ViewStyle[]}>
 					<Text>Post your buuk</Text>
+					<Icon active type='SimpleLineIcons' name='camera' />
 				</Button>
 			</Container>
 		);
@@ -71,11 +75,20 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexDirection: 'row',
 		justifyContent: 'center',
-		alignItems: 'center',
-		backgroundColor: 'yellow'
+		alignItems: 'center'
 	},
 	postButton: {
 		position: 'absolute',
-		top: 0
-	}
+		width: 160,
+		bottom: -10,
+		backgroundColor: ThemeColor.Blue1
+	},
+	postFrontButton: {
+		borderRadius: 75,
+		height: 50,
+		paddingLeft: 10
+	},
+	postBackButton: {
+		height: 25
+	},
 });
