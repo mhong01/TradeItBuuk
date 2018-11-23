@@ -19,39 +19,8 @@ export default class FeedView extends Component<any, any> {
 		}));
 	}
 
-	async OnConfirmCode() {
-		let codelErrorMessage: string;
-		let isCodeError: boolean = false;
-
-		if (this.state.Code.length == '') {
-			console.log('email required');
-			codelErrorMessage = 'Required';
-			isCodeError = true;
-		}
-
-		if (!isCodeError) {
-			let confirmSignUpReview = await AppGlobal.UserControllerInstance.ConfirmSignUpUser(this.state.Code);
-
-			switch (confirmSignUpReview) {
-				case ConfirmSignUpEnum.Success:
-					this.props.navigation.navigate('PlaceHolderView');
-					break;
-				default:
-					Toast.show({
-						text: "Encounter Problem!",
-						duration: 2000
-					})
-					break;
-			}
-
-			console.log("confirmSignUpReview:");
-			console.log(confirmSignUpReview);
-		}
-
-		this.setState({
-			IsEmailError: isCodeError,
-			CodeErrorMessage: codelErrorMessage
-		});
+	async OnPosting() {
+		this.props.navigation.navigate('CameraView');
 	}
 
 
@@ -61,7 +30,9 @@ export default class FeedView extends Component<any, any> {
 				
 
 				<Button style={[styles.postButton, styles.postBackButton] as ViewStyle[]}></Button>
-				<Button style={[styles.postButton, styles.postFrontButton] as ViewStyle[]}>
+				<Button 
+					style={[styles.postButton, styles.postFrontButton] as ViewStyle[]}
+					onPress={() => this.OnPosting()}>
 					<Text>Post your buuk</Text>
 					<Icon active type='SimpleLineIcons' name='camera' />
 				</Button>
