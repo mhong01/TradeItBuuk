@@ -1,6 +1,9 @@
 type Book @model {
 	id: ID!
 	title: String!
+	thumnail: String
+	author: String
+	isbn: String
 	programCode: String
 	classCode: String
 	posts: [Post!] @connection(name: "BookPosts")
@@ -10,5 +13,14 @@ type Post @model {
 	title: String!
   	ownerID: String!
 	description: String
+	programCode: String
+	classCode: String
+	className: String
+	price: Float
+	thumnail: String
+	author: String
+	isbn: String
+	isNegotiable: Boolean
+	isSold: Boolean
 	book: Book @connection(name: "BookPosts")
 }

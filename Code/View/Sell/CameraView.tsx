@@ -99,6 +99,5 @@ const styles = StyleSheet.create({
 	},
 	camera: {
 		height: ViewHelperInstance.ScreenSize.width * 4 / 3,
-		backgroundColor: 'yellow'
 	}
 });
