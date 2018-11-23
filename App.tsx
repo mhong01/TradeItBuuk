@@ -48,6 +48,7 @@ const AuthenticationNavigation = createStackNavigator
 
 const AppNavigator = createStackNavigator
 	({
+		// Beginning of the navigation
 		FeedView: { screen: FeedView },
 		Sell: {screen: SellNavigation },
 		Authentication: { screen: AuthenticationNavigation },
